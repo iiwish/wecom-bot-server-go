@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "send-markdown",
+    "arguments": {
+      "webhook_key": "这里是你的Webhook Key",
+      "content": "## 测试标题\n\n这是一条**Markdown**消息123123"
+    }
+  },
+  "id": 1
+}
