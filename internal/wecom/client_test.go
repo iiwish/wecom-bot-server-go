@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	testWebhookKey = "ce3ba63d-36bb-4681-8a07-0426557fc25a"
+	testWebhookKey = "测试的WebhookKey" // 替换为实际的测试WebhookKey
 )
 
 func TestSendText(t *testing.T) {
