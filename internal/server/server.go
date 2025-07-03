@@ -12,15 +12,13 @@ import (
 
 // Server MCP服务器包装器
 type Server struct {
-	mcpServer   *server.MCPServer
-	wecomClient *wecom.Client
+	mcpServer *server.MCPServer
 }
 
 // New 创建新的服务器实例
-func New(mcpServer *server.MCPServer, wecomClient *wecom.Client) *Server {
+func New(mcpServer *server.MCPServer) *Server {
 	return &Server{
-		mcpServer:   mcpServer,
-		wecomClient: wecomClient,
+		mcpServer: mcpServer,
 	}
 }
 
@@ -63,6 +61,10 @@ func (s *Server) RegisterTools(ctx context.Context) error {
 func (s *Server) registerSendTextTool() error {
 	tool := mcp.NewTool("send_text",
 		mcp.WithDescription("发送文本消息到企业微信群"),
+		mcp.WithString("webhook_key",
+			mcp.Required(),
+			mcp.Description("企业微信机器人的Webhook Key"),
+		),
 		mcp.WithString("content",
 			mcp.Required(),
 			mcp.Description("要发送的文本内容"),
@@ -83,6 +85,10 @@ func (s *Server) registerSendTextTool() error {
 func (s *Server) registerSendMarkdownTool() error {
 	tool := mcp.NewTool("send_markdown",
 		mcp.WithDescription("发送Markdown消息到企业微信群"),
+		mcp.WithString("webhook_key",
+			mcp.Required(),
+			mcp.Description("企业微信机器人的Webhook Key"),
+		),
 		mcp.WithString("content",
 			mcp.Required(),
 			mcp.Description("要发送的Markdown内容"),
@@ -97,6 +103,10 @@ func (s *Server) registerSendMarkdownTool() error {
 func (s *Server) registerSendImageTool() error {
 	tool := mcp.NewTool("send_image",
 		mcp.WithDescription("发送图片消息到企业微信群"),
+		mcp.WithString("webhook_key",
+			mcp.Required(),
+			mcp.Description("企业微信机器人的Webhook Key"),
+		),
 		mcp.WithString("base64_data",
 			mcp.Required(),
 			mcp.Description("Base64编码的图片数据"),
@@ -115,6 +125,10 @@ func (s *Server) registerSendImageTool() error {
 func (s *Server) registerSendNewsTool() error {
 	tool := mcp.NewTool("send_news",
 		mcp.WithDescription("发送图文消息到企业微信群"),
+		mcp.WithString("webhook_key",
+			mcp.Required(),
+			mcp.Description("企业微信机器人的Webhook Key"),
+		),
 		mcp.WithString("title",
 			mcp.Required(),
 			mcp.Description("图文消息标题"),
@@ -139,6 +153,10 @@ func (s *Server) registerSendNewsTool() error {
 func (s *Server) registerSendTemplateCardTool() error {
 	tool := mcp.NewTool("send_template_card",
 		mcp.WithDescription("发送模板卡片消息到企业微信群"),
+		mcp.WithString("webhook_key",
+			mcp.Required(),
+			mcp.Description("企业微信机器人的Webhook Key"),
+		),
 		mcp.WithString("card_type",
 			mcp.Required(),
 			mcp.Description("模板卡片类型"),
@@ -173,6 +191,10 @@ func (s *Server) registerSendTemplateCardTool() error {
 func (s *Server) registerUploadFileTool() error {
 	tool := mcp.NewTool("upload_file",
 		mcp.WithDescription("上传文件到企业微信"),
+		mcp.WithString("webhook_key",
+			mcp.Required(),
+			mcp.Description("企业微信机器人的Webhook Key"),
+		),
 		mcp.WithString("file_path",
 			mcp.Required(),
 			mcp.Description("要上传的文件路径"),
@@ -186,6 +208,11 @@ func (s *Server) registerUploadFileTool() error {
 // handleSendText 处理发送文本消息
 func (s *Server) handleSendText(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
+
+	webhookKey, ok := args["webhook_key"].(string)
+	if !ok || webhookKey == "" {
+		return mcp.NewToolResultError("webhook_key参数必须是非空字符串"), nil
+	}
 
 	content, ok := args["content"].(string)
 	if !ok {
@@ -208,7 +235,9 @@ func (s *Server) handleSendText(ctx context.Context, request mcp.CallToolRequest
 		}
 	}
 
-	err := s.wecomClient.SendText(content, mentionedList, mentionedMobileList)
+	// 动态创建wecom客户端
+	wecomClient := wecom.NewClient(webhookKey)
+	err := wecomClient.SendText(content, mentionedList, mentionedMobileList)
 	if err != nil {
 		return mcp.NewToolResultError("发送文本消息失败: " + err.Error()), nil
 	}
@@ -220,12 +249,19 @@ func (s *Server) handleSendText(ctx context.Context, request mcp.CallToolRequest
 func (s *Server) handleSendMarkdown(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
 
+	webhookKey, ok := args["webhook_key"].(string)
+	if !ok || webhookKey == "" {
+		return mcp.NewToolResultError("webhook_key参数必须是非空字符串"), nil
+	}
+
 	content, ok := args["content"].(string)
 	if !ok {
 		return mcp.NewToolResultError("content参数必须是字符串"), nil
 	}
 
-	err := s.wecomClient.SendMarkdown(content)
+	// 动态创建wecom客户端
+	wecomClient := wecom.NewClient(webhookKey)
+	err := wecomClient.SendMarkdown(content)
 	if err != nil {
 		return mcp.NewToolResultError("发送Markdown消息失败: " + err.Error()), nil
 	}
@@ -237,6 +273,11 @@ func (s *Server) handleSendMarkdown(ctx context.Context, request mcp.CallToolReq
 func (s *Server) handleSendImage(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
 
+	webhookKey, ok := args["webhook_key"].(string)
+	if !ok || webhookKey == "" {
+		return mcp.NewToolResultError("webhook_key参数必须是非空字符串"), nil
+	}
+
 	base64Data, ok := args["base64_data"].(string)
 	if !ok {
 		return mcp.NewToolResultError("base64_data参数必须是字符串"), nil
@@ -247,7 +288,9 @@ func (s *Server) handleSendImage(ctx context.Context, request mcp.CallToolReques
 		return mcp.NewToolResultError("md5参数必须是字符串"), nil
 	}
 
-	err := s.wecomClient.SendImage(base64Data, md5Hash)
+	// 动态创建wecom客户端
+	wecomClient := wecom.NewClient(webhookKey)
+	err := wecomClient.SendImage(base64Data, md5Hash)
 	if err != nil {
 		return mcp.NewToolResultError("发送图片消息失败: " + err.Error()), nil
 	}
@@ -258,6 +301,11 @@ func (s *Server) handleSendImage(ctx context.Context, request mcp.CallToolReques
 // handleSendNews 处理发送图文消息
 func (s *Server) handleSendNews(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
+
+	webhookKey, ok := args["webhook_key"].(string)
+	if !ok || webhookKey == "" {
+		return mcp.NewToolResultError("webhook_key参数必须是非空字符串"), nil
+	}
 
 	title, ok := args["title"].(string)
 	if !ok {
@@ -289,7 +337,9 @@ func (s *Server) handleSendNews(ctx context.Context, request mcp.CallToolRequest
 		},
 	}
 
-	err := s.wecomClient.SendNews(articles)
+	// 动态创建wecom客户端
+	wecomClient := wecom.NewClient(webhookKey)
+	err := wecomClient.SendNews(articles)
 	if err != nil {
 		return mcp.NewToolResultError("发送图文消息失败: " + err.Error()), nil
 	}
@@ -300,6 +350,11 @@ func (s *Server) handleSendNews(ctx context.Context, request mcp.CallToolRequest
 // handleSendTemplateCard 处理发送模板卡片消息
 func (s *Server) handleSendTemplateCard(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
+
+	webhookKey, ok := args["webhook_key"].(string)
+	if !ok || webhookKey == "" {
+		return mcp.NewToolResultError("webhook_key参数必须是非空字符串"), nil
+	}
 
 	cardType, ok := args["card_type"].(string)
 	if !ok {
@@ -346,7 +401,9 @@ func (s *Server) handleSendTemplateCard(ctx context.Context, request mcp.CallToo
 		CardActionPagePath: cardActionPagePath,
 	}
 
-	err := s.wecomClient.SendTemplateCard(params)
+	// 动态创建wecom客户端
+	wecomClient := wecom.NewClient(webhookKey)
+	err := wecomClient.SendTemplateCard(params)
 	if err != nil {
 		return mcp.NewToolResultError("发送模板卡片消息失败: " + err.Error()), nil
 	}
@@ -358,12 +415,19 @@ func (s *Server) handleSendTemplateCard(ctx context.Context, request mcp.CallToo
 func (s *Server) handleUploadFile(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
 
+	webhookKey, ok := args["webhook_key"].(string)
+	if !ok || webhookKey == "" {
+		return mcp.NewToolResultError("webhook_key参数必须是非空字符串"), nil
+	}
+
 	filePath, ok := args["file_path"].(string)
 	if !ok {
 		return mcp.NewToolResultError("file_path参数必须是字符串"), nil
 	}
 
-	mediaID, err := s.wecomClient.UploadFile(filePath)
+	// 动态创建wecom客户端
+	wecomClient := wecom.NewClient(webhookKey)
+	mediaID, err := wecomClient.UploadFile(filePath)
 	if err != nil {
 		return mcp.NewToolResultError("上传文件失败: " + err.Error()), nil
 	}

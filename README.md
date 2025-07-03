@@ -26,32 +26,28 @@ cd wecom-bot-server-go
 go mod tidy
 ```
 
-### 3. 配置文件
+### 3. 配置方式
 
-复制配置文件模板并填入你的企业微信机器人 Webhook Key：
-
-```bash
-cp config.json.example config.json
-```
-
-编辑 `config.json` 文件：
-
-```json
-{
-  "wecom_webhook_key": "your_actual_webhook_key_here"
-}
-```
+无需配置文件或环境变量，所有企业微信 webhook_key 均通过每次工具调用参数传递，支持多机器人灵活适配。
 
 ### 4. 构建项目
 
 ```bash
-go build -o wecom-bot-server ./cmd/main.go
+go build ./cmd/main.go
 ```
 
 ### 5. 运行服务器
 
 ```bash
-./wecom-bot-server
+go run ./cmd/main.go
+```
+
+服务器启动后，将以 HTTP 协议监听 8080 端口，MCP 客户端可通过如下方式调用：
+
+```bash
+curl -X POST http://localhost:8080/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"tool":"send_text","arguments":{"webhook_key":"xxx","content":"Hello"}}'
 ```
 
 ## MCP 工具说明
@@ -176,6 +172,8 @@ wecom-bot-server-go/
 2. 进入"应用管理" -> "群机器人"
 3. 创建新的群机器人或编辑现有机器人
 4. 复制 Webhook URL 中的 `key` 参数值
+
+> 使用本MCP工具时，每次调用需传递 webhook_key 参数，无需任何本地配置文件。
 
 Webhook URL 格式：`https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY_HERE`
 
