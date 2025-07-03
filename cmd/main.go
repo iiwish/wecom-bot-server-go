@@ -17,6 +17,7 @@ func main() {
 		mcpserver.WithToolCapabilities(true),
 		mcpserver.WithRecovery(),
 		mcpserver.WithLogging(),
+		mcpserver.WithInstructions("该工具支持通过企业微信机器人向群聊发送文本、Markdown、图片、图文、模板卡片等多种类型的消息，并支持文件上传。每次调用可灵活指定 webhook_key，无需本地配置，适用于多机器人、多群场景。适合自动化推送通知、播报信息、群内互动等企业微信场景。"),
 	)
 
 	// 创建服务器实例并注册工具
