@@ -59,7 +59,7 @@ func (s *Server) RegisterTools(ctx context.Context) error {
 
 // registerSendTextTool 注册发送文本消息工具
 func (s *Server) registerSendTextTool() error {
-	tool := mcp.NewTool("send_text",
+	tool := mcp.NewTool("send-text",
 		mcp.WithDescription("发送文本消息到企业微信群"),
 		mcp.WithString("webhook_key",
 			mcp.Required(),
@@ -83,7 +83,7 @@ func (s *Server) registerSendTextTool() error {
 
 // registerSendMarkdownTool 注册发送Markdown消息工具
 func (s *Server) registerSendMarkdownTool() error {
-	tool := mcp.NewTool("send_markdown",
+	tool := mcp.NewTool("send-markdown",
 		mcp.WithDescription("发送Markdown消息到企业微信群"),
 		mcp.WithString("webhook_key",
 			mcp.Required(),
@@ -101,7 +101,7 @@ func (s *Server) registerSendMarkdownTool() error {
 
 // registerSendImageTool 注册发送图片消息工具
 func (s *Server) registerSendImageTool() error {
-	tool := mcp.NewTool("send_image",
+	tool := mcp.NewTool("send-image",
 		mcp.WithDescription("发送图片消息到企业微信群"),
 		mcp.WithString("webhook_key",
 			mcp.Required(),
@@ -123,7 +123,7 @@ func (s *Server) registerSendImageTool() error {
 
 // registerSendNewsTool 注册发送图文消息工具
 func (s *Server) registerSendNewsTool() error {
-	tool := mcp.NewTool("send_news",
+	tool := mcp.NewTool("send-news",
 		mcp.WithDescription("发送图文消息到企业微信群"),
 		mcp.WithString("webhook_key",
 			mcp.Required(),
@@ -151,7 +151,7 @@ func (s *Server) registerSendNewsTool() error {
 
 // registerSendTemplateCardTool 注册发送模板卡片工具
 func (s *Server) registerSendTemplateCardTool() error {
-	tool := mcp.NewTool("send_template_card",
+	tool := mcp.NewTool("send-template-card",
 		mcp.WithDescription("发送模板卡片消息到企业微信群"),
 		mcp.WithString("webhook_key",
 			mcp.Required(),
@@ -189,7 +189,7 @@ func (s *Server) registerSendTemplateCardTool() error {
 
 // registerUploadFileTool 注册上传文件工具
 func (s *Server) registerUploadFileTool() error {
-	tool := mcp.NewTool("upload_file",
+	tool := mcp.NewTool("upload-file",
 		mcp.WithDescription("上传文件到企业微信"),
 		mcp.WithString("webhook_key",
 			mcp.Required(),
