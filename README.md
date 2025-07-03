@@ -1,3 +1,4 @@
+项目地址：[https://github.com/iiwish/wecom-bot-server-go](https://github.com/iiwish/wecom-bot-server-go)
 # 企业微信机器人 MCP 服务器
 
 这是一个基于 Go 语言的 MCP (Model Context Protocol) 服务器，提供企业微信机器人功能。
@@ -16,7 +17,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/iiwish/wecom-bot-server-go
 cd wecom-bot-server-go
 ```
 
@@ -133,13 +134,10 @@ wecom-bot-server-go/
 ├── cmd/
 │   └── main.go              # 程序入口
 ├── internal/
-│   ├── config/
-│   │   └── config.go        # 配置管理
 │   ├── server/
 │   │   └── server.go        # MCP 服务器实现
 │   └── wecom/
 │       └── client.go        # 企业微信客户端
-├── config.json              # 配置文件
 ├── go.mod                   # Go 模块文件
 └── README.md               # 项目说明
 ```
@@ -179,7 +177,6 @@ Webhook URL 格式：`https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_
 
 ## 许可证
 
-[添加你的许可证信息]
 
 ## 贡献
 
@@ -188,3 +185,30 @@ Webhook URL 格式：`https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_
 ## 支持
 
 如有问题，请创建 Issue 或联系维护者。
+## License
+
+This project is licensed under the MIT License.
+
+```
+MIT License
+
+Copyright (c) 2025 iiwish
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
